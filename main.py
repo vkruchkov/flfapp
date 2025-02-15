@@ -28,6 +28,7 @@ logger = logging.getLogger("FirstLatvianFusker")
 logger.setLevel(cfg.loglevel)
 
 # create the logging file handler
+# Time rotating logs
 fh = TimedRotatingFileHandler(cfg.logname, 'midnight', 1, 6)
 formatter = logging.Formatter('%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)

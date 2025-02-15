@@ -34,6 +34,7 @@ class Page:
 
         service = webdriver.ChromeService(executable_path="/usr/local/bin/geckodriver")
         driver = webdriver.Firefox(options=options, service=service)
+        # restrict time to wait for page
         driver.set_page_load_timeout(self.cfg.timeout)
 
         try:
