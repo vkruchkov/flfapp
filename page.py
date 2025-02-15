@@ -41,6 +41,8 @@ class Page:
                 driver.get(url)
             except TimeoutException:
                 pass
+            except Exception as err:
+                self.logger.error('Thread %s - Page.ReadPage(): error reading page: %s', self.page_id, str(err))
 
             # Получаем HTML-код страницы
             page_source = driver.page_source
@@ -60,7 +62,7 @@ class Page:
             else:
                 self.logger.error('Thread %s - Page.ReadPage(): Failed to collect image links', self.page_id)
         except Exception as err:
-            self.logger.error('PagesList.ReadPagesList() error: %s', str(err))
+            self.logger.error('Thread %s - Page.ReadPage(): error: %s', self.page_id, str(err))
         finally:
             # Закрываем браузер, даже если возникла ошибка
             if 'driver' in locals():

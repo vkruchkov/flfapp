@@ -50,9 +50,12 @@ class PagesList:
 
             try:
                 driver.get(url)
+                self.logger.debug('PagesList.ReadPagesList(): got page')
             except TimeoutException:
-                pass
-            self.logger.debug('PagesList.ReadPagesList(): got page')
+                self.logger.debug('PagesList.ReadPagesList(): got page partially after timeout')
+            except Exception as err:
+                self.logger.error('PagesList.ReadPagesList(): error reading page: %s', str(err))
+
             try:
                 links = driver.find_elements(By.TAG_NAME, "a")
             except NoSuchElementException:

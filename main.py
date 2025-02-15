@@ -1,3 +1,5 @@
+from logging.handlers import TimedRotatingFileHandler
+
 from config import *
 from pages_list import *
 from download_file import *
@@ -26,8 +28,7 @@ logger = logging.getLogger("FirstLatvianFusker")
 logger.setLevel(cfg.loglevel)
 
 # create the logging file handler
-fh = logging.FileHandler(cfg.logname)
-
+fh = TimedRotatingFileHandler(cfg.logname, 'midnight', 1, 6)
 formatter = logging.Formatter('%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 
