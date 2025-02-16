@@ -17,7 +17,6 @@ class LinksDB:
             cursor = self.conn.cursor()
             cursor.execute("insert into link_list(id,ts) values (?,?);",(id, time.time(),))
         except sqlite3.DatabaseError as err:
-            print("Error: ", err)
             self.logger.error('LinksDB.add_link() error: %s', err)
         else:
             self.conn.commit()
@@ -30,15 +29,9 @@ class LinksDB:
             cursor = self.conn.cursor()
             cursor.execute("select count(*) from link_list where id = (?);",(id,))
             (cnt,) = cursor.fetchone()
-        except sqlite3.DatabaseError as err:
-            self.logger.error('LinksDB.exist_link() error: %s', err)
-            cnt = 100
-
-        try:
-            cursor = self.conn.cursor()
             cursor.execute("delete from link_list where ts < (?);",(m,))
         except sqlite3.DatabaseError as err:
             self.logger.error('LinksDB.exist_link() error: %s', err)
-
+            cnt = 100
         self.logger.debug('LinksDB.exist_link() ended. Return %i', cnt)
         return cnt

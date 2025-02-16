@@ -36,36 +36,36 @@ class Page:
         options = Options()
         options.add_argument("--headless")  # Включаем headless-режим
 
-        service = webdriver.ChromeService(executable_path=self.cfg.geckodriver_path)
-        driver = webdriver.Firefox(options=options, service=service)
-        # restrict time to wait for page
-        driver.set_page_load_timeout(self.cfg.timeout)
-
         try:
-            try:
-                driver.get(url)
-            except TimeoutException:
-                pass
-            except Exception as err:
-                self.logger.error('Thread %s - Page.ReadPage(): error reading page: %s', self.page_id, str(err))
+            service = webdriver.ChromeService(executable_path=self.cfg.geckodriver_path)
+            with webdriver.Firefox(options=options, service=service) as driver:
+                # restrict time to wait for page
+                driver.set_page_load_timeout(self.cfg.timeout)
 
-            # Получаем HTML-код страницы
-            page_source = driver.page_source
-            # Парсим страницу с помощью BeautifulSoup
-            soup = BeautifulSoup(page_source, 'html.parser')
-            # Ищем все теги <img> и извлекаем ссылки на изображения
-            for img_tag in soup.find_all('img'):
-                src = img_tag.get('src')
-                if src:
-                    self.url_list.append(src)
-                    self.count += 1
+                try:
+                    driver.get(url)
+                except TimeoutException:
+                    pass
+                except Exception as err:
+                    self.logger.error('Thread %s - Page.ReadPage(): error reading page: %s', self.page_id, str(err))
 
-            self.logger.debug('Thread %s - Page.ReadPage(): Found %i picture links', self.page_id, self.count)
-            if self.count > 0:
-                self.hostname = url = urlparse(self.url_list[0]).hostname
-                self.logger.debug('Thread %s - Page.ReadPage(): Host name - %s', self.page_id, self.hostname)
-            else:
-                self.logger.error('Thread %s - Page.ReadPage(): Failed to collect image links', self.page_id)
+                # Получаем HTML-код страницы
+                page_source = driver.page_source
+                # Парсим страницу с помощью BeautifulSoup
+                soup = BeautifulSoup(page_source, 'html.parser')
+                # Ищем все теги <img> и извлекаем ссылки на изображения
+                for img_tag in soup.find_all('img'):
+                    src = img_tag.get('src')
+                    if src:
+                        self.url_list.append(src)
+                        self.count += 1
+
+                self.logger.debug('Thread %s - Page.ReadPage(): Found %i picture links', self.page_id, self.count)
+                if self.count > 0:
+                    self.hostname = url = urlparse(self.url_list[0]).hostname
+                    self.logger.debug('Thread %s - Page.ReadPage(): Host name - %s', self.page_id, self.hostname)
+                else:
+                    self.logger.error('Thread %s - Page.ReadPage(): Failed to collect image links', self.page_id)
         except Exception as err:
             self.logger.error('Thread %s - Page.ReadPage(): error: %s', self.page_id, str(err))
         finally:

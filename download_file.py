@@ -12,14 +12,11 @@ def download_file(url, file_name, logger, threshold, id):
     logger.debug('Thread %s - download_file(%s) started', id, url)
     rcode = 1
     hires = False
-#    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
     try:
-#        request = urllib.request.Request(url, headers={'User-Agent': user_agent})  # type: Any
-#        resource = urllib.request.urlopen(url)
         resource = urlopen(Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'}))
-        out_file = open(file_name, 'wb')
-        out_file.write(resource.read())
-        out_file.close()
+        with open(file_name, 'wb') as out_file:
+            out_file.write(resource.read())
+            out_file.close()
 
         img = Image.open(file_name,"r")
         sz = img.size
