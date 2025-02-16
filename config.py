@@ -15,6 +15,7 @@ DEFAULT_BLACK_LIST = 'black.list'
 DEFAULT_THRESHOLD = 1500
 DEFAULT_HOLD_DAYS = 3
 DEFAULT_TIMEOUT = 15
+DEFAULT_GECKODRIVER_PATH = '/usr/local/bin/geckodriver'
 
 class Config:
     def __init__(self):
@@ -29,6 +30,7 @@ class Config:
         self.threshold = DEFAULT_THRESHOLD
         self.hold_days = DEFAULT_HOLD_DAYS
         self.timeout = DEFAULT_TIMEOUT
+        self.geckodriver_path = DEFAULT_GECKODRIVER_PATH
 
     def read_config(self, config_name):
         config = configparser.ConfigParser()
