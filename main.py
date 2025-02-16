@@ -16,16 +16,16 @@ import signal
 from pages_list import PagesList
 
 def terminate(signalNumber, frame):
-    """
-    Здесь мы можем обработать завершение нашего приложения
-    Главное не забыть в конце выполнить выход sys.exit()
-    """
-    logger.critical(f'Recieved {signalNumber}')
+    logger.critical(f'Received {signalNumber}')
     raise KeyboardInterrupt
 
+# Read configuration
 cfg = Config()
 cfg.ReadConfig('FirstLatvianFusker.cfg')
 
+signal.signal(signal.SIGABRT, terminate)
+signal.signal(signal.SIGBREAK, terminate)
+signal.signal(signal.SIGINT, terminate)
 signal.signal(signal.SIGTERM, terminate)
 
 logger = logging.getLogger("FirstLatvianFusker")
@@ -51,10 +51,12 @@ while not done:
         list.ReadPagesList(cfg.url)
         list.ProcessPagesList()
         if threading.activeCount() == 1 :
-            logger.debug("Idle")
+            logger.debug("Idle. Sleep 60 sec")
+        else :
+            logger.debug("Sleep 60 sec")
         time.sleep(60)    # pause 60 second
     except  KeyboardInterrupt:
-        logger.critical("Ctrl-X pressed")
+        logger.critical("Program interrupt raised")
         done = True
     except Exception:
         logger.critical("Unexpected error: %s", str(e))
