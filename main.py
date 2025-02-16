@@ -21,7 +21,7 @@ def terminate(signalNumber, frame):
 
 # Read configuration
 cfg = Config()
-cfg.ReadConfig('FirstLatvianFusker.cfg')
+cfg.read_config('FirstLatvianFusker.cfg')
 
 signal.signal(signal.SIGABRT, terminate)
 signal.signal(signal.SIGBREAK, terminate)
