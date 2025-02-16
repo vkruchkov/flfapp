@@ -17,6 +17,8 @@ class BlackList:
     def readBlackList(self):
         try:
             t = os.path.getmtime(self.cfg.blacklist)
+            # Temporary array of patterns
+            ptt = []
             if t > self.last_time:
                 self.last_time = t
                 self.lst.clear()
@@ -26,8 +28,11 @@ class BlackList:
                 self.lst.sort()
                 self.lst = list(filter(None, self.lst))
                 for l in self.lst:
-                    self.patterns.append(re.compile(l))
+                    # Fill temporary array of patterns
+                    ptt.append(re.compile(l))
                     cnt = cnt +1
+                # Set patterns array
+                self.patterns = ptt;
                 self.logger.info('BlackList.readBlackList() loaded %u records', cnt)
         except Exception as err:
                 self.logger.error('BlackList.readBlackList() error: %s', err)
