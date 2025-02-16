@@ -86,6 +86,35 @@ class PagesList:
         self.logger.debug('PagesList.ReadPagesList() ended')
 
     def ProcessPagesList(self):
+        """
+        Process page links concurrently and manage thread execution.
+        
+        This method continuously processes the list of page identifiers (`id_list`)
+        until it is empty. For each element, the method:
+          - Waits until the number of active threads is below the configured maximum.
+          - Logs the current status and details of the element being processed.
+          - Adds the element to the database via `db.add_link`.
+          - Creates and starts a new thread to handle the page processing using the
+            external function `prescript` with the configuration, logger, element, and blacklist.
+          - Pauses briefly between iterations to regulate processing and logging.
+        
+        Parameters:
+            None
+        
+        Returns:
+            None
+        
+        Side Effects:
+            - Launches new threads for processing page downloads.
+            - Adds links to the database.
+            - Logs debug information for each step of the process.
+            
+        Notes:
+            - An empty `id_list` triggers an IndexError, which is caught to signal
+              the completion of processing.
+            - The method uses a fixed sleep interval (1 second) to allow thread slots
+              to become available and to pace the processing.
+        """
         self.logger.debug('PagesList.ProcessPagesList() started')
         done = False
         while not done:
