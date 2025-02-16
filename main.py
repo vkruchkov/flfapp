@@ -56,5 +56,8 @@ while not done:
     except  KeyboardInterrupt:
         logger.critical("Ctrl-X pressed")
         done = True
+    except Exception:
+        logger.critical("Unexpected error: %s", str(e))
+        done = True
 logger.critical('Program finished')
 
