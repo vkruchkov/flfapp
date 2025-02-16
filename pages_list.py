@@ -1,5 +1,8 @@
+##########################################################################
+###################### First Latvian Fasker' Ripper ######################
+#################### Copyright (c) 2024-2025 mr.Iceman ###################
+##########################################################################
 from threading import Thread
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
