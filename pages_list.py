@@ -77,12 +77,14 @@ class PagesList:
                 href = link.get_attribute("href")
                 # Извлекаем подстроку с 11 по 20 символы (индексы 10:20)
                 el = href[31:] if len(href) >= 31 else "0"
-                if self.db.exist_link(el) == 0:
+                link_exist = self.db.exist_link(el)
+                if  link_exist == 0:
                     self.id_list.append(el)
                     self.logger.debug('PagesList.ReadPagesList(): found new element: %s ', el)
-                else:
+                elif link_exist == 1:
                     self.logger.debug('PagesList.ReadPagesList(): element %s already exists', el)
-
+                else:    
+                    self.logger.error('PagesList.ReadPagesList(): Failed to verify that element %s exists', el)
         finally:
             # Закрываем браузер, даже если возникла ошибка
             if 'driver' in locals():

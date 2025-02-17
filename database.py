@@ -28,6 +28,7 @@ class LinksDB:
                     ts REAL NOT NULL
                 )
             ''')
+            cursor.execute('CREATE INDEX IF NOT EXISTS idx_link_list_id ON link_list(id)')
             self.conn.commit()
             self.logger.info("Database initialized successfully")
             return True
