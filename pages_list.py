@@ -41,6 +41,29 @@ class PagesList:
         self.blist.readBlackList()
 
     def ReadPagesList(self, url):
+        """
+        Retrieve and process link elements from the specified URL.
+        
+        This method sets up a headless Firefox browser using Selenium with configurations
+        provided by self.cfg, navigates to the given URL, and extracts all <a> elements from the page.
+        It filters these links to include only those whose 'href' attribute contains "lid=".
+        For each filtered link, it extracts a substring starting at index 31 (if the href length is at least 31),
+        or defaulting to "0" otherwise. The extracted substring is then checked against a database via
+        self.db.exist_link; if the link does not already exist, it is appended to self.id_list for further processing.
+        All actions and errors are logged using self.logger, and the browser is properly closed even if errors occur.
+        
+        Parameters:
+            url (str): The URL of the page to scrape for links.
+        
+        Returns:
+            None
+        
+        Notes:
+            - A TimeoutException may occur if the page load exceeds the configured timeout; this is caught and logged.
+            - A NoSuchElementException is caught and logged if no <a> elements are found on the page.
+            - The method uses self.cfg.geckodriver_path for specifying the path to the geckodriver executable.
+            - All browser operations are executed in headless mode.
+        """
         self.logger.debug('PagesList.ReadPagesList() started')
         # Настройка Firefox для работы в headless-режиме
         options = Options()
@@ -87,33 +110,24 @@ class PagesList:
 
     def ProcessPagesList(self):
         """
-        Process page links concurrently and manage thread execution.
+        Process each page identifier in the instance's id_list concurrently using threads.
         
-        This method continuously processes the list of page identifiers (`id_list`)
-        until it is empty. For each element, the method:
-          - Waits until the number of active threads is below the configured maximum.
-          - Logs the current status and details of the element being processed.
-          - Adds the element to the database via `db.add_link`.
-          - Creates and starts a new thread to handle the page processing using the
-            external function `prescript` with the configuration, logger, element, and blacklist.
-          - Pauses briefly between iterations to regulate processing and logging.
+        This method continuously pops page identifiers from self.id_list and processes each one by:
+          - Waiting until the number of active threads drops below the maximum allowed (determined by self.cfg.max_threads).
+          - Logging debug messages to trace the processing stages.
+          - Adding the identifier to the database via self.db.add_link.
+          - Creating and starting a new thread that runs the prescript function with the current element and necessary context (configuration, logger, blacklist).
         
-        Parameters:
-            None
-        
-        Returns:
-            None
+        The loop terminates when self.id_list is empty (i.e., a pop operation raises an IndexError). Throughout its execution, the method includes brief pauses (using time.sleep) to manage thread load and ensure that new threads are only started when capacity is available.
         
         Side Effects:
-            - Launches new threads for processing page downloads.
-            - Adds links to the database.
-            - Logs debug information for each step of the process.
-            
-        Notes:
-            - An empty `id_list` triggers an IndexError, which is caught to signal
-              the completion of processing.
-            - The method uses a fixed sleep interval (1 second) to allow thread slots
-              to become available and to pace the processing.
+          - Launches new threads to process pages.
+          - Updates the database with new page identifiers.
+          - Logs detailed debug messages regarding the current processing state.
+          
+        Note:
+          - This method does not return a value.
+          - It relies on catching IndexError to detect when there are no more elements to process.
         """
         self.logger.debug('PagesList.ProcessPagesList() started')
         done = False

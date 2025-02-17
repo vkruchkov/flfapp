@@ -26,6 +26,26 @@ class Page:
         self.page_id = page_id
 
     def ReadPage(self, blist):
+        """
+        Read and parse the web page to extract image source URLs.
+        
+        This method constructs the target URL using the configuration and page ID, then launches a Firefox WebDriver in headless mode (with the geckodriver path provided in the configuration). It attempts to load the page with a specified timeout and, on success, retrieves the HTML content. Using BeautifulSoup, the method searches for all <img> tags and collects the 'src' attribute of each valid tag, updating the object's url_list and image count. If at least one image URL is found, the hostname of the first image is extracted and stored. All key steps and failures are logged using the instance's logger.
+        
+        Parameters:
+            blist (Any): A blacklist object (or similar) used later to determine whether to skip image downloads.
+        
+        Returns:
+            None
+        
+        Side Effects:
+            - Updates self.url_list with the collected image source URLs.
+            - Sets self.count to the number of extracted image links.
+            - Assigns the hostname of the first image URL to self.hostname if any images are found.
+            - Logs debug and error messages detailing the progress and any issues encountered.
+            
+        Exception Handling:
+            Exceptions during page loading and parsing (e.g., timeouts or other errors) are caught and logged.
+        """
         self.logger.debug('Thread %s - Page.ReadPage(%s) started', self.page_id, self.page_id)
         self.url_list = []
         self.count = 0
