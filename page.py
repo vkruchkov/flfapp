@@ -5,16 +5,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import WebDriverException, NoSuchElementException, TimeoutException
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
-import re
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from urllib.parse import urlparse
 from download_file import *
 import os
-import config
-import logging
-import blacklist
 import shutil
 
 class Page:
@@ -25,7 +19,7 @@ class Page:
         self.logger = logger
         self.page_id = page_id
 
-    def ReadPage(self, blist):
+    def read_page(self, blist):
         """
         Read and parse the web page to extract image source URLs.
         
@@ -51,6 +45,7 @@ class Page:
         self.count = 0
         self.blist = blist
         url = self.cfg.pageurl + self.page_id
+        self.links = []
 
         # Настройка Firefox для работы в headless-режиме
         options = Options()
@@ -71,11 +66,13 @@ class Page:
 
                 # Получаем HTML-код страницы
                 page_source = driver.page_source
-                # Парсим страницу с помощью BeautifulSoup
-                soup = BeautifulSoup(page_source, 'html.parser')
-                # Ищем все теги <img> и извлекаем ссылки на изображения
-                for img_tag in soup.find_all('img'):
-                    src = img_tag.get('src')
+                try:
+                    links = driver.find_elements(By.TAG_NAME, "img")
+                except NoSuchElementException:
+                    links = []
+                # Фильтрация ссылок, содержащих атрибуты src
+                for link in links:
+                    src = link.get_attribute("src")
                     if src:
                         self.url_list.append(src)
                         self.count += 1
@@ -94,7 +91,7 @@ class Page:
                 driver.quit()
         self.logger.debug('Thread %s - Page.ReadPage() ended', self.page_id)
 
-    def DownloadPage(self):
+    def download_page(self):
         self.logger.debug('Thread %s - Page.DownloadPage() started', self.page_id)
         cnt = 0
         hires = 0

@@ -4,9 +4,7 @@
 ##########################################################################
 from urllib.request import urlopen, Request
 from PIL import Image
-import os
-from typing import Any
-
+CONST_MAX_FILE_SIZE = 50 * 1024 * 1024
 
 def download_file(url, file_name, logger, threshold, id):
     """
@@ -38,10 +36,14 @@ def download_file(url, file_name, logger, threshold, id):
     rcode = 1
     hires = False
     try:
-        resource = urlopen(Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'}))
+        request = Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
+        resource = urlopen(request, timeout=30)
+        content_length = resource.headers.get('content-length')
+        if content_length and int(content_length) > CONST_MAX_FILE_SIZE:
+            raise ValueError(f"File too large: {int(content_length) / (1024 * 1024):.2f}MB")
         with open(file_name, 'wb') as out_file:
             out_file.write(resource.read())
-            out_file.close()
 
         img = Image.open(file_name,"r")
         sz = img.size

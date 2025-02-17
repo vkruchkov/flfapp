@@ -37,18 +37,18 @@ class Config:
         - timeout (int): Timeout duration in seconds from DEFAULT_TIMEOUT.
         - geckodriver_path (str): Path to the Geckodriver from DEFAULT_GECKODRIVER_PATH.
         """
-        self.url = DEFAULT_URL
-        self.logname = DEFAULT_LOG_PATH
-        self.loglevel = logging.INFO
-        self.basepath = DEFAULT_BASE_PATH
-        self.pageurl = DEFAULT_PAGE_URL + DEFAULT_URL
-        self.database = DEFAULT_DATABASE
-        self.max_threads = DEFAULT_MAX_THREADS
-        self.blacklist = DEFAULT_BLACK_LIST
-        self.threshold = DEFAULT_THRESHOLD
-        self.hold_days = DEFAULT_HOLD_DAYS
-        self.timeout = DEFAULT_TIMEOUT
-        self.geckodriver_path = DEFAULT_GECKODRIVER_PATH
+        self.url: str = DEFAULT_URL
+        self.logname: str = DEFAULT_LOG_PATH
+        self.loglevel: str = logging.INFO
+        self.basepath: str = DEFAULT_BASE_PATH
+        self.pageurl: str = DEFAULT_PAGE_URL + DEFAULT_URL
+        self.database: str = DEFAULT_DATABASE
+        self.max_threads: int = DEFAULT_MAX_THREADS
+        self.blacklistL: str = DEFAULT_BLACK_LIST
+        self.threshold: int = DEFAULT_THRESHOLD
+        self.hold_days: int = DEFAULT_HOLD_DAYS
+        self.timeout: int = DEFAULT_TIMEOUT
+        self.geckodriver_path: str = DEFAULT_GECKODRIVER_PATH
 
     def read_config(self, config_name):
         """
@@ -107,16 +107,31 @@ class Config:
             self.database = config.get("Settings", "database")
 
         with suppress(configparser.Error):
-            self.max_threads = config.get("Settings", "max_threads")
+            self.max_threads = config.getint("Settings", "max_threads")
 
         with suppress(configparser.Error):
             self.blacklist = config.get("Settings", "blacklist")
 
         with suppress(configparser.Error):
-            self.threshold = config.get("Settings", "threshold")
+            self.threshold = config.getint("Settings", "threshold")
 
         with suppress(configparser.Error):
-            self.hold_days = config.get("Settings", "hold_days")
+            self.hold_days = config.getint("Settings", "hold_days")
 
         with suppress(configparser.Error):
-            self.timeout = config.get("Settings", "timeout")
+            self.timeout = config.getint("Settings", "timeout")
+
+        self.validate()
+
+    def validate(self):
+        """Проверяет корректность конфигурации."""
+        if not self.url.startswith(('http://', 'https://')):
+            raise ValueError(f"Некорректный URL: {self.url}")
+        if self.max_threads < 1:
+            raise ValueError(f"max_threads должно быть больше 0: {self.max_threads}")
+        if self.threshold < 0:
+            raise ValueError(f"threshold должно быть положительным: {self.threshold}")
+        if self.hold_days < 0:
+            raise ValueError(f"hold_days должно быть положительным: {self.hold_days}")
+        if self.timeout < 0:
+            raise ValueError(f"timeout должно быть положительным: {self.timeout}")

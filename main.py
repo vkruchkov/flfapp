@@ -2,10 +2,9 @@
 ###################### First Latvian Fasker' Ripper ######################
 #################### Copyright (c) 2024-2025 mr.Iceman ###################
 ##########################################################################
+import threading
 from logging.handlers import TimedRotatingFileHandler
-
-from config import *
-from pages_list import *
+from config import Config
 import logging
 from database import *
 import time
@@ -27,17 +26,15 @@ def terminate(signal_number, frame):
     Raises:
         KeyboardInterrupt: Always raised to interrupt the program execution.
     """
-    logger.critical(f'Received {signal_number}')
+    logger.critical(f'Received signal {signal_number}')
     raise KeyboardInterrupt
 
 # Read configuration
 cfg = Config()
 cfg.read_config('FirstLatvianFusker.cfg')
 
-signal.signal(signal.SIGABRT, terminate)
-signal.signal(signal.SIGBREAK, terminate)
-signal.signal(signal.SIGINT, terminate)
-signal.signal(signal.SIGTERM, terminate)
+for sig in [signal.SIGABRT, signal.SIGINT, signal.SIGTERM]:
+    signal.signal(sig, terminate)
 
 logger = logging.getLogger("FirstLatvianFusker")
 logger.setLevel(cfg.loglevel)
@@ -59,8 +56,8 @@ done = False
 while not done:
     try:
         list = PagesList(cfg, logger, db, blist)
-        list.ReadPagesList(cfg.url)
-        list.ProcessPagesList()
+        list.read_pages_list(cfg.url)
+        list.process_pages_list()
         if threading.activeCount() == 1 :
             logger.debug("Idle. Sleep 60 sec")
         else :

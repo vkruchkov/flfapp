@@ -2,37 +2,18 @@
 ###################### First Latvian Fasker' Ripper ######################
 #################### Copyright (c) 2024-2025 mr.Iceman ###################
 ##########################################################################
-from threading import Thread
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import WebDriverException, NoSuchElementException, TimeoutException
-# from bs4 import BeautifulSoup
-from urllib.request import urlopen
-from urllib.error import HTTPError
-from urllib.error import URLError
-import re
-
-from selenium.webdriver.firefox.service import Service
-
-import config
-import logging
-import database
 from page import *
 import threading
 import time
-import blacklist
-
 
 def prescript(cfg, logger, id, blist):
     page = Page(cfg, logger, id)
-    page.ReadPage(blist)
+    page.read_page(blist)
     if page.count > 0:
-        page.DownloadPage()
+        page.download_page()
 
 class PagesList:
     def __init__(self, cfg, logger, db, blist):
-#        self.urls_tag = []
         self.id_list = []
         self.cfg = cfg
         self.logger = logger
@@ -40,7 +21,7 @@ class PagesList:
         self.blist = blist
         self.blist.readBlackList()
 
-    def ReadPagesList(self, url):
+    def read_pages_list(self, url):
         """
         Retrieve and process link elements from the specified URL.
         
@@ -108,7 +89,7 @@ class PagesList:
                 driver.quit()
         self.logger.debug('PagesList.ReadPagesList() ended')
 
-    def ProcessPagesList(self):
+    def process_pages_list(self):
         """
         Process each page identifier in the instance's id_list concurrently using threads.
         
@@ -135,7 +116,7 @@ class PagesList:
             try:
                 element = self.id_list.pop()
 
-                while threading.activeCount() > int(self.cfg.max_threads) + 1:
+                while (threading.activeCount() - 1) >= self.cfg.max_threads:
                     time.sleep(1)  # pause 1 second
                     self.logger.debug('PagesList.ProcessPagesList() waiting for empty thread...')
                 self.logger.debug('PagesList.ProcessPagesList(): process element %s', element)
@@ -143,9 +124,9 @@ class PagesList:
                 thread1 = threading.Thread(target=prescript, args=(self.cfg, self.logger, element, self.blist))
                 self.logger.debug('PagesList.ProcessPagesList(): Created thread %s', element)
                 thread1.start()
-            except IndexError as err:
+            except IndexError:
                 done = True
             time.sleep(1)  # pause 1 second
-            self.logger.debug('PagesList.ProcessPagesList(): count of active threads = %i', threading.activeCount())
+            self.logger.debug('PagesList.ProcessPagesList(): count of active threads = %i', threading.activeCount() - 1)
 
         self.logger.debug('PagesList.ProcessPagesList() ended')
