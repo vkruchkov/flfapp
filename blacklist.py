@@ -32,7 +32,7 @@ class BlackList:
                     ptt.append(re.compile(l))
                     cnt = cnt +1
                 # Set patterns array
-                self.patterns = ptt;
+                self.patterns = ptt
                 self.logger.info('BlackList.readBlackList() loaded %u records', cnt)
         except Exception as err:
                 self.logger.error('BlackList.readBlackList() error: %s', err)

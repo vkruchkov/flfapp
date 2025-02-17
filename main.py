@@ -6,7 +6,6 @@ from logging.handlers import TimedRotatingFileHandler
 
 from config import *
 from pages_list import *
-from download_file import *
 import logging
 from database import *
 import time
@@ -15,8 +14,8 @@ import signal
 
 from pages_list import PagesList
 
-def terminate(signalNumber, frame):
-    logger.critical(f'Received {signalNumber}')
+def terminate(signal_number, frame):
+    logger.critical(f'Received {signal_number}')
     raise KeyboardInterrupt
 
 # Read configuration
@@ -58,7 +57,7 @@ while not done:
     except  KeyboardInterrupt:
         logger.critical("Program interrupt raised")
         done = True
-    except Exception:
+    except Exception as e:
         logger.critical("Unexpected error: %s", str(e))
         done = True
 logger.critical('Program finished')

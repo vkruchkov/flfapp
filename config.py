@@ -4,6 +4,7 @@
 ##########################################################################
 import configparser
 import logging
+from contextlib import suppress
 
 DEFAULT_URL = 'https://www.fusker.xxx/en/'
 DEFAULT_LOG_PATH = 'FirstLatvianFusker.log'
@@ -36,57 +37,37 @@ class Config:
         config = configparser.ConfigParser()
         config.read(config_name)
 
-        try:
+        with suppress(configparser.Error):
             self.url = config.get("Settings", "url")
-        except:
-            pass
 
-        try:
+        with suppress(configparser.Error):
             self.logname = config.get("Settings", "logname")
-        except:
-            pass
 
-        try:
+        with suppress(configparser.Error):
             self.loglevel = config.get("Settings", "loglevel")
-        except:
-            pass
 
-        try:
+
+        with suppress(configparser.Error):
             self.basepath = config.get("Settings", "basepath")
-        except:
-            pass
 
-        try:
+
+        with suppress(configparser.Error):
             self.pageurl = self.url + config.get("Settings", "pageurl")
-        except:
-            self.pageurl = self.url + DEFAULT_PAGE_URL
 
-        try:
+        with suppress(configparser.Error):
             self.database = config.get("Settings", "database")
-        except:
-             pass
 
-        try:
+        with suppress(configparser.Error):
             self.max_threads = config.get("Settings", "max_threads")
-        except:
-             pass
 
-        try:
+        with suppress(configparser.Error):
             self.blacklist = config.get("Settings", "blacklist")
-        except:
-             pass
 
-        try:
+        with suppress(configparser.Error):
             self.threshold = config.get("Settings", "threshold")
-        except:
-             pass
 
-        try:
+        with suppress(configparser.Error):
             self.hold_days = config.get("Settings", "hold_days")
-        except:
-             pass
 
-        try:
+        with suppress(configparser.Error):
             self.timeout = config.get("Settings", "timeout")
-        except:
-             pass
