@@ -15,6 +15,18 @@ import signal
 from pages_list import PagesList
 
 def terminate(signal_number, frame):
+    """
+    Terminate the program in response to a received signal.
+    
+    This function logs a critical message with the received signal number and then raises a KeyboardInterrupt to initiate graceful termination.
+    
+    Parameters:
+        signal_number (int): The signal identifier that triggered the termination.
+        frame (FrameType): The current stack frame (unused).
+        
+    Raises:
+        KeyboardInterrupt: Always raised to interrupt the program execution.
+    """
     logger.critical(f'Received {signal_number}')
     raise KeyboardInterrupt
 

@@ -20,6 +20,23 @@ DEFAULT_GECKODRIVER_PATH = '/usr/local/bin/geckodriver'
 
 class Config:
     def __init__(self):
+        """
+        Initialize a new configuration instance with default settings.
+        
+        This constructor sets configuration attributes using predefined constants:
+        - url (str): Base URL from DEFAULT_URL.
+        - logname (str): Log file path from DEFAULT_LOG_PATH.
+        - loglevel (int): Logging level, set to logging.INFO.
+        - basepath (str): Base directory path from DEFAULT_BASE_PATH.
+        - pageurl (str): Complete page URL formed by concatenating DEFAULT_PAGE_URL and DEFAULT_URL.
+        - database (str): Database name/path from DEFAULT_DATABASE.
+        - max_threads (int): Maximum number of threads from DEFAULT_MAX_THREADS.
+        - blacklist (str): Path to the blacklist file from DEFAULT_BLACK_LIST.
+        - threshold (int/float): Threshold value from DEFAULT_THRESHOLD.
+        - hold_days (int): Number of days to hold data from DEFAULT_HOLD_DAYS.
+        - timeout (int): Timeout duration in seconds from DEFAULT_TIMEOUT.
+        - geckodriver_path (str): Path to the Geckodriver from DEFAULT_GECKODRIVER_PATH.
+        """
         self.url = DEFAULT_URL
         self.logname = DEFAULT_LOG_PATH
         self.loglevel = logging.INFO
@@ -34,6 +51,38 @@ class Config:
         self.geckodriver_path = DEFAULT_GECKODRIVER_PATH
 
     def read_config(self, config_name):
+        """
+        Read configuration settings from a file and update instance attributes.
+        
+        This method uses the configparser module to parse the configuration file specified by
+        `config_name`. It attempts to read various settings from the "Settings" section, including:
+        - `url`: Base URL for the application.
+        - `logname`: Name or path for the log file.
+        - `loglevel`: Logging level.
+        - `basepath`: Base directory path.
+        - `pageurl`: A URL segment that is appended to the main URL.
+        - `database`: Database name or connection string.
+        - `max_threads`: Maximum number of threads to utilize.
+        - `blacklist`: Path or identifier for the blacklist file.
+        - `threshold`: Threshold value for specific operations.
+        - `hold_days`: The number of days for which certain operations are held.
+        - `timeout`: Timeout value for operations.
+        
+        Each setting is retrieved within a context that suppresses any `configparser.Error` exceptions,
+        leaving the corresponding attribute unchanged if the setting is missing or improperly formatted.
+        
+        Parameters:
+            config_name (str): The path to the configuration file.
+        
+        Returns:
+            None
+        
+        Example:
+            >>> config = Config()
+            >>> config.read_config("settings.ini")
+            >>> print(config.url)
+            http://example.com
+        """
         config = configparser.ConfigParser()
         config.read(config_name)
 
