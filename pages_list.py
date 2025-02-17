@@ -83,7 +83,7 @@ class PagesList:
                     self.logger.debug('PagesList.ReadPagesList(): found new element: %s ', el)
                 elif link_exist == 1:
                     self.logger.debug('PagesList.ReadPagesList(): element %s already exists', el)
-                else:    
+                else:
                     self.logger.error('PagesList.ReadPagesList(): Failed to verify that element %s exists', el)
         finally:
             # Закрываем браузер, даже если возникла ошибка

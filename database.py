@@ -22,6 +22,7 @@ class LinksDB:
         """
         try:
             cursor = self.conn.cursor()
+            elf.conn.execute('BEGIN')
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS link_list (
                     id TEXT NOT NULL UNIQUE,
@@ -33,6 +34,7 @@ class LinksDB:
             self.logger.info("Database initialized successfully")
             return True
         except sqlite3.Error as e:
+            self.conn.rollback()
             self.logger.error(f"Failed to initialize database: {e}")
             return False
 
