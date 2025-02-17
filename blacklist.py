@@ -58,8 +58,9 @@ class BlackList:
 
     def inBlackList(self, url):
         found = False
-        for p in self.patterns:
-            if re.search(p,url) is not None:
-                found = True
-                break
+        if url:
+            for p in self.patterns:
+                if re.search(p,url) is not None:
+                    found = True
+                    break
         return found

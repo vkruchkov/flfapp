@@ -10,6 +10,30 @@ class LinksDB:
         self.cfg = cfg
         self.logger = logger
         self.conn = sqlite3.connect(self.cfg.database)
+        self.initialize_database()
+
+    def initialize_database(self):
+        """
+        Initialize the database if it doesn't exist.
+        Creates the necessary table structure for storing links.
+
+        Returns:
+            bool: True if initialization was successful, False otherwise
+        """
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS link_list (
+                    id TEXT NOT NULL UNIQUE,
+                    ts REAL NOT NULL
+                )
+            ''')
+            self.conn.commit()
+            self.logger.info("Database initialized successfully")
+            return True
+        except sqlite3.Error as e:
+            self.logger.error(f"Failed to initialize database: {e}")
+            return False
 
     def add_link(self, id):
         """
