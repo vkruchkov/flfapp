@@ -52,7 +52,7 @@ class Page:
         options.add_argument("--headless")  # Включаем headless-режим
 
         try:
-            service = webdriver.ChromeService(executable_path=self.cfg.geckodriver_path)
+            service = webdriver.FirefoxService(executable_path=self.cfg.geckodriver_path)
             with webdriver.Firefox(options=options, service=service) as driver:
                 # restrict time to wait for page
                 driver.set_page_load_timeout(self.cfg.timeout)

@@ -2,7 +2,7 @@
 ###################### First Latvian Fasker' Ripper ######################
 #################### Copyright (c) 2024-2025 mr.Iceman ###################
 ##########################################################################
-from page import *
+from page import Page, Options, webdriver, TimeoutException, NoSuchElementException, By
 import threading
 import time
 
@@ -51,7 +51,7 @@ class PagesList:
         options.add_argument("--headless")  # Включаем headless-режим
 
         try:
-            service = webdriver.ChromeService(executable_path=self.cfg.geckodriver_path)
+            service = webdriver.FirefoxService(executable_path=self.cfg.geckodriver_path)
             driver = webdriver.Firefox(options=options,service=service)
             driver.set_page_load_timeout(self.cfg.timeout)
 

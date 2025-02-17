@@ -5,6 +5,7 @@
 import configparser
 import logging
 from contextlib import suppress
+from urllib.parse import urljoin
 
 DEFAULT_URL = 'https://www.fusker.xxx/en/'
 DEFAULT_LOG_PATH = 'FirstLatvianFusker.log'
@@ -41,10 +42,10 @@ class Config:
         self.logname: str = DEFAULT_LOG_PATH
         self.loglevel: str = logging.INFO
         self.basepath: str = DEFAULT_BASE_PATH
-        self.pageurl: str = DEFAULT_PAGE_URL + DEFAULT_URL
+        self.pageurl: str = urljoin(DEFAULT_URL, DEFAULT_PAGE_URL)
         self.database: str = DEFAULT_DATABASE
         self.max_threads: int = DEFAULT_MAX_THREADS
-        self.blacklistL: str = DEFAULT_BLACK_LIST
+        self.blacklist: str = DEFAULT_BLACK_LIST
         self.threshold: int = DEFAULT_THRESHOLD
         self.hold_days: int = DEFAULT_HOLD_DAYS
         self.timeout: int = DEFAULT_TIMEOUT
@@ -101,7 +102,7 @@ class Config:
 
 
         with suppress(configparser.Error):
-            self.pageurl = self.url + config.get("Settings", "pageurl")
+            self.pageurl = urljoin(self.url, config.get("Settings", "pageurl"))
 
         with suppress(configparser.Error):
             self.database = config.get("Settings", "database")
