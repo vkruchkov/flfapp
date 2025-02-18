@@ -22,7 +22,7 @@ class LinksDB:
         """
         try:
             cursor = self.conn.cursor()
-            elf.conn.execute('BEGIN')
+            self.conn.execute('BEGIN')
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS link_list (
                     id TEXT NOT NULL UNIQUE,
