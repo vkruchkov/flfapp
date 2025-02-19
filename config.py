@@ -68,6 +68,7 @@ class Config:
         - `threshold`: Threshold value for specific operations.
         - `hold_days`: The number of days for which certain operations are held.
         - `timeout`: Timeout value for operations.
+        - 'geckodriver_path': path to geckodriver
         
         Each setting is retrieved within a context that suppresses any `configparser.Error` exceptions,
         leaving the corresponding attribute unchanged if the setting is missing or improperly formatted.
@@ -122,6 +123,8 @@ class Config:
         with suppress(configparser.Error):
             self.timeout = config.getint("Settings", "timeout")
 
+        with suppress(configparser.Error):
+            self.geckodriver_path = config.getint("Settings", "geckodriver_path")
         self.validate()
 
     def validate(self):

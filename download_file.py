@@ -33,7 +33,7 @@ def download_file(url, file_name, logger, threshold, id):
         (1, True)
     """
     logger.debug('Thread %s - download_file(%s) started', id, url)
-    rcode = 1
+    rcode = 0
     hires = False
     try:
         request = Request(url, headers={
@@ -58,6 +58,7 @@ def download_file(url, file_name, logger, threshold, id):
 
     else:
         logger.info('Thread %s - Saved file %s', id, url)
+        rcode = 1
 
     logger.debug('Thread %s - download_file() ended', id)
     return rcode, hires

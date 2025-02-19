@@ -114,7 +114,7 @@ class Page:
                     hires = hires + hires1
                 if (cnt > 0) and (hires == 0):
                     self.logger.debug('Thread %s - No HIRES pictures', self.page_id)
-                if (cnt == 0) or (hires == 0):
+                if (hires == 0):
                     try:
                         shutil.rmtree(full_path, ignore_errors=False, onerror=None)
                         self.logger.debug('Thread %s - Page.DownloadPage(): Removed directory %s', self.page_id,
