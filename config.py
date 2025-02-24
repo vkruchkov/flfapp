@@ -29,7 +29,7 @@ class Config:
         - logname (str): Log file path from DEFAULT_LOG_PATH.
         - loglevel (int): Logging level, set to logging.INFO.
         - basepath (str): Base directory path from DEFAULT_BASE_PATH.
-        - pageurl (str): Complete page URL formed by concatenating DEFAULT_PAGE_URL and DEFAULT_URL.
+        - pageurl (str): A URL segment that is appended to the main URL.
         - database (str): Database name/path from DEFAULT_DATABASE.
         - max_threads (int): Maximum number of threads from DEFAULT_MAX_THREADS.
         - blacklist (str): Path to the blacklist file from DEFAULT_BLACK_LIST.
@@ -42,7 +42,7 @@ class Config:
         self.logname: str = DEFAULT_LOG_PATH
         self.loglevel: str = logging.INFO
         self.basepath: str = DEFAULT_BASE_PATH
-        self.pageurl: str = urljoin(DEFAULT_URL, DEFAULT_PAGE_URL)
+        self.pageurl: str = DEFAULT_PAGE_URL
         self.database: str = DEFAULT_DATABASE
         self.max_threads: int = DEFAULT_MAX_THREADS
         self.blacklist: str = DEFAULT_BLACK_LIST
@@ -103,7 +103,7 @@ class Config:
 
 
         with suppress(configparser.Error):
-            self.pageurl = urljoin(self.url, config.get("Settings", "pageurl"))
+            self.pageurl = config.get("Settings", "pageurl")
 
         with suppress(configparser.Error):
             self.database = config.get("Settings", "database")
