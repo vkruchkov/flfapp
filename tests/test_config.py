@@ -12,7 +12,9 @@ class TestConfig(unittest.TestCase):
         cfg = configparser.ConfigParser()
         cfg['Settings'] = {'url': 'https://www.ixbt.com',
                      'max_threads': '1',
-                     'threshold': '2000'}
+                     'threshold': '2000',
+                     'repeat': '60',
+                     'delay': 0}
         with open(TEST_CONFIGNAME, 'w') as configfile:
             cfg.write(configfile)
     

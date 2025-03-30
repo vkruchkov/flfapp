@@ -1,4 +1,5 @@
 # test_page.py
+import logging
 import os
 import shutil
 import unittest
@@ -10,6 +11,7 @@ from page import Page
 from selenium.webdriver.common.by import By
 
 TEST_DIR = 'files/www.mike-picture.at/3793395'
+TEST_ID = '3793395'
 
 class TestPage(unittest.TestCase):
     def setUp(self):
@@ -18,8 +20,16 @@ class TestPage(unittest.TestCase):
         self.cfg.basepath = DEFAULT_BASE_PATH
         self.cfg.timeout = 10
         self.cfg.threshold = 1000
-        self.logger = Mock()
-        self.page_id = '3793395'
+
+        # Init logger
+        self.logger = logging.getLogger("FirstLatvianFusker")
+        self.logger.setLevel(self.cfg.loglevel)
+        fh = logging.FileHandler(self.cfg.logname)
+        formatter = logging.Formatter('%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+        self.logger.addHandler(fh)
+
+        self.page_id = TEST_ID
         self.page = Page(self.cfg, self.logger, self.page_id)
         self.blacklist = BlackList(self.cfg,self.logger)
 
@@ -32,4 +42,4 @@ class TestPage(unittest.TestCase):
         self.assertEqual(len([name for name in os.listdir(TEST_DIR) if os.path.isfile(os.path.join(TEST_DIR, name))]),6)
 
     def tearDown(self):
-        shutil.rmtree(TEST_DIR, ignore_errors=False, onerror=None)
+        shutil.rmtree(TEST_DIR, ignore_errors=True, onerror=None)

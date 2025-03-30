@@ -59,10 +59,10 @@ while not done:
         list.read_pages_list(cfg.url)
         list.process_pages_list()
         if threading.activeCount() == 1 :
-            logger.debug("Idle. Sleep 60 sec")
+            logger.debug("Idle. Sleep %i sec", cfg.repeat)
         else :
-            logger.debug("Sleep 60 sec")
-        time.sleep(60)    # pause 60 second
+            logger.debug("Sleep %i sec", cfg.repeat)
+        time.sleep(cfg.repeat)    # pause 
     except  KeyboardInterrupt:
         logger.critical("Program interrupt raised")
         done = True

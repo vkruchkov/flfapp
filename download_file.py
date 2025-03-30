@@ -2,11 +2,12 @@
 ###################### First Latvian Fasker' Ripper ######################
 #################### Copyright (c) 2024-2025 mr.Iceman ###################
 ##########################################################################
+import time
 from urllib.request import urlopen, Request
 from PIL import Image
 CONST_MAX_FILE_SIZE = 50 * 1024 * 1024
 
-def download_file(url, file_name, logger, threshold, id):
+def download_file(cfg, url, file_name, logger, threshold, id):
     """
     Download an image from a URL, save it locally, and check if its dimensions exceed a given threshold.
     
@@ -35,6 +36,8 @@ def download_file(url, file_name, logger, threshold, id):
     logger.debug('Thread %s - download_file(%s) started', id, url)
     rcode = 0
     hires = False
+    
+    time.sleep(cfg.delay)
     try:
         request = Request(url, headers={
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'})
@@ -47,10 +50,9 @@ def download_file(url, file_name, logger, threshold, id):
 
         img = Image.open(file_name,"r")
         sz = img.size
-        dm = sz[0] + sz[1]
         img.close()
         logger.debug('Image %s dimensions: %u x %u', file_name, sz[0], sz[1])
-        if dm > threshold:
+        if (sz[0] > threshold) and (sz[1] > threshold):
             hires = True
 
     except Exception as e:

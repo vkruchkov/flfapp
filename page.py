@@ -44,7 +44,7 @@ class Page:
         self.url_list = []
         self.count = 0
         self.blist = blist
-        url = self.cfg.pageurl + self.page_id
+        url = self.cfg.url+self.cfg.pageurl + self.page_id
         self.links = []
 
         # Настройка Firefox для работы в headless-режиме
@@ -109,7 +109,7 @@ class Page:
 
                 for element in self.url_list:
                     self.logger.debug('Thread %s - Page.DownloadPage(): element %s', self.page_id, element)
-                    cnt1, hires1 = download_file(element, full_path+'/'+get_file_name(element), self.logger, int(self.cfg.threshold), self.page_id)
+                    cnt1, hires1 = download_file(self.cfg, element, full_path+'/'+get_file_name(element), self.logger, int(self.cfg.threshold), self.page_id)
                     cnt = cnt + cnt1
                     hires = hires + hires1
                 if (cnt > 0) and (hires == 0):

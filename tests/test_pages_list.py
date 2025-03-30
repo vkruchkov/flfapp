@@ -13,14 +13,12 @@ class TestPagesList(unittest.TestCase):
         self.cfg.max_threads = 2
         self.cfg.timeout = 10
 
+        # Init logger
         self.logger = logging.getLogger("FirstLatvianFusker")
         self.logger.setLevel(self.cfg.loglevel)
-        # create the logging file handler
-        # Time rotating logs
         fh = logging.FileHandler(self.cfg.logname)
         formatter = logging.Formatter('%(asctime)s - %(module)s:%(lineno)d - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
-        # add handler to logger object
         self.logger.addHandler(fh)
 
         self.db = Mock()

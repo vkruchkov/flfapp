@@ -14,10 +14,12 @@ DEFAULT_BASE_PATH = 'files'
 DEFAULT_DATABASE = 'flf.db'
 DEFAULT_MAX_THREADS = 10
 DEFAULT_BLACK_LIST = 'black.list'
-DEFAULT_THRESHOLD = 1500
+DEFAULT_THRESHOLD = 1000
 DEFAULT_HOLD_DAYS = 3
 DEFAULT_TIMEOUT = 15
 DEFAULT_GECKODRIVER_PATH = '/usr/local/bin/geckodriver'
+DEFAULT_REPEAT = 300
+DEFAULT_DELAY = 5
 
 class Config:
     def __init__(self):
@@ -37,6 +39,8 @@ class Config:
         - hold_days (int): Number of days to hold data from DEFAULT_HOLD_DAYS.
         - timeout (int): Timeout duration in seconds from DEFAULT_TIMEOUT.
         - geckodriver_path (str): Path to the Geckodriver from DEFAULT_GECKODRIVER_PATH.
+        - repeat (int): delay between main page scans in seconds
+        - delay (int): delay before picture download in seconds 
         """
         self.url: str = DEFAULT_URL
         self.logname: str = DEFAULT_LOG_PATH
@@ -50,6 +54,8 @@ class Config:
         self.hold_days: int = DEFAULT_HOLD_DAYS
         self.timeout: int = DEFAULT_TIMEOUT
         self.geckodriver_path: str = DEFAULT_GECKODRIVER_PATH
+        self.repeat: int = DEFAULT_REPEAT
+        self.delay: int = DEFAULT_DELAY
 
     def read_config(self, config_name):
         """
@@ -125,6 +131,12 @@ class Config:
 
         with suppress(configparser.Error):
             self.geckodriver_path = config.getint("Settings", "geckodriver_path")
+
+        with suppress(configparser.Error):
+            self.repeat = config.getint("Settings", "repeat")
+
+        with suppress(configparser.Error):
+            self.delay = config.getint("Settings", "delay")
         self.validate()
 
     def validate(self):
@@ -139,3 +151,8 @@ class Config:
             raise ValueError(f"hold_days должно быть положительным: {self.hold_days}")
         if self.timeout < 0:
             raise ValueError(f"timeout должно быть положительным: {self.timeout}")
+        if self.repeat < 1:
+            raise ValueError(f"repeat должно быть больше 0: {self.repeat}")
+        if self.delay < 0:
+            raise ValueError(f"delay должно быть положительным: {self.delay}")
+
