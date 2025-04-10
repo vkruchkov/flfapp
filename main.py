@@ -10,7 +10,6 @@ from database import *
 import time
 import blacklist
 import signal
-import
 from pages_list import PagesList
 from remove_empty_dirs import remove_empty_subdirectories
 
