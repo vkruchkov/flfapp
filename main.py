@@ -10,8 +10,10 @@ from database import *
 import time
 import blacklist
 import signal
-
+import
 from pages_list import PagesList
+from remove_empty_dirs import remove_empty_subdirectories
+
 
 def terminate(signal_number, frame):
     """
@@ -53,14 +55,19 @@ logger.critical('Program started')
 db = LinksDB(cfg,logger)
 blist = blacklist.BlackList(cfg, logger)
 done = False
+flag_idle_ft = True
 while not done:
     try:
-        list = PagesList(cfg, logger, db, blist)
-        list.read_pages_list(cfg.url)
-        list.process_pages_list()
+        plist = PagesList(cfg, logger, db, blist)
+        plist.read_pages_list(cfg.url)
+        plist.process_pages_list()
         if threading.activeCount() == 1 :
+            if flag_idle_ft :
+                flag_idle_ft = False
+                remove_empty_subdirectories(cfg.basepath, logger)
             logger.debug("Idle. Sleep %i sec", cfg.repeat)
         else :
+            flag_idle_ft = True
             logger.debug("Sleep %i sec", cfg.repeat)
         time.sleep(cfg.repeat)    # pause 
     except  KeyboardInterrupt:
